@@ -5,9 +5,9 @@ server:
 
 spring:
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/profile_db}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:123456}
+    url: mysql://root:DvUPOEaxzznpzBFjbDJGsKFaxXHTNzta@maglev.proxy.rlwy.net:17696/railway
+    username: root
+    password: DvUPOEaxzznpzBFjbDJGsKFaxXHTNzta
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

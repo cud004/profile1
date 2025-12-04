@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile CRUD Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>Profile Service Demo</h1>
+
+<div class="layout">
+    <!-- LEFT: FORM CRUD -->
+    <div class="left">
+        <div class="section">
+            <h2>Create Profile</h2>
+            <label>Username: <input id="create-username" type="text"></label><br>
+            <label>Gender (true/false): <input id="create-gender" type="text" value="true"></label><br>
+            <label>Age: <input id="create-age" type="number" value="20"></label><br>
+            <button onclick="createProfile()">Create</button>
+        </div>
+
+        <div class="section">
+            <h2>Get Profile By ID</h2>
+            <label>ID: <input id="get-id" type="number"></label><br>
+            <button onclick="getProfile()">Get</button>
+        </div>
+
+        <div class="section">
+            <h2>Get All Profiles</h2>
+            <button onclick="getAllProfiles()">Load All</button>
+        </div>
+
+        <div class="section">
+            <h2>Update Profile</h2>
+            <label>ID: <input id="update-id" type="number"></label><br>
+            <label>Gender (true/false): <input id="update-gender" type="text" value="true"></label><br>
+            <label>Age: <input id="update-age" type="number" value="25"></label><br>
+            <button onclick="updateProfile()">Update</button>
+        </div>
+
+        <div class="section">
+            <h2>Delete Profile</h2>
+            <label>ID: <input id="delete-id" type="number"></label><br>
+            <button onclick="deleteProfile()">Delete</button>
+        </div>
+    </div>
+
+    <!-- RIGHT: API RESPONSE (STICKY) -->
+    <div class="right">
+        <div class="section">
+            <h2>API Response</h2>
+            <pre id="output"></pre>
+        </div>
+    </div>
+</div>
+
+<script>
+    // vì server đang có context-path = /api
+    const baseUrl = "/api";
+
+    function setOutput(data) {
+        document.getElementById("output").textContent =
+            typeof data === "string" ? data : JSON.stringify(data, null, 2);
+    }
+
+    async function createProfile() {
+        const username = document.getElementById("create-username").value;
+        const gender = document.getElementById("create-gender").value === "true";
+        const age = parseInt(document.getElementById("create-age").value, 10);
+
+        try {
+            const res = await fetch(baseUrl + "/profiles", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, gender, age })
+            });
+            setOutput(await res.json());
+        } catch (e) {
+            setOutput("Error: " + e);
+        }
+    }
+
+    async function getProfile() {
+        const id = document.getElementById("get-id").value;
+        if (!id) return setOutput("Please input ID");
+
+        try {
+            const res = await fetch(baseUrl + "/profiles/" + id);
+            if (!res.ok) return setOutput("Error " + res.status);
+            setOutput(await res.json());
+        } catch (e) {
+            setOutput("Error: " + e);
+        }
+    }
+
+    async function getAllProfiles() {
+        try {
+            const res = await fetch(baseUrl + "/profiles");
+            setOutput(await res.json());
+        } catch (e) {
+            setOutput("Error: " + e);
+        }
+    }
+
+    async function updateProfile() {
+        const id = document.getElementById("update-id").value;
+        const gender = document.getElementById("update-gender").value === "true";
+        const age = parseInt(document.getElementById("update-age").value, 10);
+        if (!id) return setOutput("Please input ID");
+
+        try {
+            const res = await fetch(baseUrl + "/profiles/" + id, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ gender, age })
+            });
+            if (!res.ok) return setOutput("Error " + res.status);
+            setOutput(await res.json());
+        } catch (e) {
+            setOutput("Error: " + e);
+        }
+    }
+
+    async function deleteProfile() {
+        const id = document.getElementById("delete-id").value;
+        if (!id) return setOutput("Please input ID");
+
+        try {
+            const res = await fetch(baseUrl + "/profiles/" + id, { method: "DELETE" });
+            if (!res.ok) return setOutput("Error " + res.status);
+            setOutput(await res.text());
+        } catch (e) {
+            setOutput("Error: " + e);
+        }
+    }
+</script>
+</body>
+</html>

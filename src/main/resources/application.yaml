@@ -1,0 +1,28 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /api
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/profile_db}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
